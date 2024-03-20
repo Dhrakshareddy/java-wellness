@@ -28,21 +28,14 @@ public class Progress implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long progressId;
 	
-	@Column(name="user_id")
-	private Long userId;
 	
-	@Column(name="date")
-	private Date date;
 	
-	@Column(name="weight")
-	private Double weight;
+	@Column(name="username")
+	private String username;
 	
-	@Column(name="fitness_test_results")
-	private Double fitnessTestResults;
-
-	public Long getProgressId() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	@Column(name="progress_date")
+	private Date progressDate;
+	
+	@Column(name="calculate_progress")
+	private Double calculateProgress;
 }

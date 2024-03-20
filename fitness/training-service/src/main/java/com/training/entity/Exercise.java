@@ -9,13 +9,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+@Data
 @Setter
 @Getter
-@ToString
 @Entity
 @Table(name="exercise")
 public class Exercise implements Serializable {
@@ -33,8 +34,7 @@ public class Exercise implements Serializable {
 	@Column(name="description")
 	private String description;
 	
-	@Column(name="exercise_type")
-	private String exerciseType;
+	
 	
 	@Column(name="number_of_sets")
 	private Integer numberOfSets;
@@ -42,12 +42,11 @@ public class Exercise implements Serializable {
 	@Column(name="equipment_needed")
 	private String equipmentNeeded;
 	
-	@Column(name="intensity_level")
-	private String intensityLevel;
 
-	public Long getExerciseId() {
-		// TODO Auto-generated method stub
-		return null;
+	@Column(name="username")
+	private String username;
+	
+	
 	}
 	
-}
+

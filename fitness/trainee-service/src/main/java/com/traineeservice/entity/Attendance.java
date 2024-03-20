@@ -22,33 +22,31 @@ import lombok.ToString;
 @ToString
 @Entity
 @Table(name = "attendance")
-public class Attendance  implements Serializable{
+public class Attendance implements Serializable {
 	private static final long serialVersionUID = -1516965327693370237L;
 
 	@Id
-	@Column(name = "user_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	@Column(name = "attendance_id")
+	private Long attendanceId;
+
 
 	@Column(name = "user_name")
 	private String name;
 
 	@Column(name = "date")
 	private Date date;
-	
+
 	@Column(name = "status")
 	private String status;
 
-	@Column(name="feedback")
+	@Column(name = "feedback")
 	private String feedback;
 
-	public Long getId() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	@Column(name = "user_id")
+	private Long userId;
+
 	
-//	@OneToOne
-//	@JoinColumn(name="profile_id")
-//	private Long profileId;
 	
+
 }

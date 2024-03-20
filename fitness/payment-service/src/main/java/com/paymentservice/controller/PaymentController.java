@@ -1,23 +1,9 @@
 package com.paymentservice.controller;
 
-//import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
-
-//import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
-
-//import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.paymentservice.entity.Payment;
 import com.paymentservice.exceptions.ResourceNotFoundException;
@@ -28,88 +14,78 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequestMapping("/payment")
+@CrossOrigin(origins = "http://localhost:4200")
 public class PaymentController {
 
 	@Autowired
 	private PaymentService paymentService;
 
-//	@Autowired
-//	private PaymentsRepository paymentsRepository;
-
+	/**
+	 * Endpoint for saving a payment.
+	 *
+	 * @param payment The {@link Payment} object to save.
+	 * @return A {@link ResponseEntity} containing the saved {@link Payment} object
+	 *         with HTTP status code 201 (Created).
+	 */
 	@PostMapping(path = "/save")
-	public ResponseEntity<Payment> save(@RequestBody Payment payments) {
-		System.out.println("Saving payments {}"+ payments);
-		System.out.println("saving");
-		paymentService.save(payments);
+	public ResponseEntity<Payment> save(@RequestBody Payment payment) {
+		log.info("Saving payment: {}", payment);
 
-		ResponseEntity<Payment> responseEntity = new ResponseEntity<>(payments, HttpStatus.CREATED);
+		paymentService.save(payment);
+
+		ResponseEntity<Payment> responseEntity = new ResponseEntity<>(payment, HttpStatus.CREATED);
+		log.info("Saved payment successfully");
 		return responseEntity;
 	}
-	
+
+	/**
+	 * Endpoint for fetching a payment by ID.
+	 *
+	 * @param paymentId The ID of the payment to fetch.
+	 * @return A {@link ResponseEntity} containing the fetched {@link Payment}
+	 *         object with HTTP status code 200 (OK) if found, or an HTTP status
+	 *         code 404 (Not Found) if no payment is found with the given ID.
+	 * @throws Exception
+	 */
 	@GetMapping(path = "/{paymentId}")
-	public ResponseEntity<Payment> getPatient(@PathVariable Long paymentId) throws Exception  {
-		//log.info("Fetching payments {}", paymentId);
+	public ResponseEntity<Payment> getPayment(@PathVariable Long paymentId) throws Exception {
 		try {
-		Payment payments = paymentService.get(paymentId);
-		System.out.print("payments getted successfully");
-		ResponseEntity<Payment> responseEntity = new ResponseEntity<>(payments,
-				HttpStatus.OK);
-		System.out.println("payments getted successfully1");
-		
-		return responseEntity;
+			log.info("Fetching payment by ID: {}", paymentId);
+			Payment payment = paymentService.get(paymentId);
+			log.info("Fetched payment successfully");
+			ResponseEntity<Payment> responseEntity = new ResponseEntity<>(payment, HttpStatus.OK);
+			return responseEntity;
+		} catch (ResourceNotFoundException e) {
+			log.error("Error fetching payment: {}", e.getMessage());
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
 		}
-		catch(ResourceNotFoundException e)
-		
-		{
-			System.out.println(e.getMessage());
-			
-		}
-		return null;
 	}
-	
-	
-	@DeleteMapping(path="/{paymentId}")
-	
-	public String deletePatient(@PathVariable Long paymentId)
-	
-	{
-		
-		Payment payments = paymentService.deleteById(paymentId);
-		System.out.print("payments getted successfully");
-		ResponseEntity<Payment> responseEntity = new ResponseEntity<>(payments,
-				HttpStatus.OK);
-		
-		return "record deleted";
-		
-	}
-	
-	
 
-	
-//	@PutMapping(path="/update/{paymentId}")
-//	public ResponseEntity<Payments> updateById(@RequestBody Payments payments) {
-//		// log.info("Saving patient {}", payments);
-//		System.out.println("updated successfully");
-//		paymentsService.update(payments);
-//
-//		ResponseEntity<Payments> responseEntity = new ResponseEntity<>(payments, HttpStatus.CREATED);
-//		return responseEntity;
-//	}
-//	
+	/**
+	 * Endpoint for deleting a payment by ID.
+	 *
+	 * @param paymentId The ID of the payment to delete.
+	 * @return A string indicating the status of the operation.
+	 */
+	@DeleteMapping(path = "/{paymentId}")
+	public String deletePayment(@PathVariable Long paymentId) {
+		log.info("Deleting payment with ID: {}", paymentId);
+		Payment payment = paymentService.deleteById(paymentId);
+		log.info("Deleted payment successfully");
+		ResponseEntity<Payment> responseEntity = new ResponseEntity<>(payment, HttpStatus.OK);
+		return "Record deleted";
+	}
+
+	/**
+	 * Endpoint for updating a payment's payment mode by ID.
+	 *
+	 * @param paymentId   The ID of the payment to update.
+	 * @param paymentMode The new payment mode.
+	 */
 	@PutMapping("/update/{paymentId}")
-    public void updateEntity(@PathVariable Long paymentId, @RequestParam String paymentMode) {
-        // Perform validation or error handling as needed
-
-		
-		
+	public void updateEntity(@PathVariable Long paymentId, @RequestParam String paymentMode) {
+		log.info("Updating payment with ID: {} and paymentMode: {}", paymentId, paymentMode);
 		paymentService.updateEntity(paymentId, paymentMode);
-
-       
-    }
-	
-	
-	
-	
-
-
+		log.info("Updated payment successfully");
+	}
 }

@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 
 public class TraineeServiceExceptionHandler {
 	public static Logger log = LoggerFactory.getLogger(TraineeServiceExceptionHandler.class.getSimpleName());
+
 	@ExceptionHandler(value = NoSuchRecordFoundException.class)
 	public ResponseEntity<String> exception(NoSuchRecordFoundException exception) {
 		log.error("ResourceNotFoundException-" + exception.getMessage(), exception);
@@ -29,7 +30,6 @@ public class TraineeServiceExceptionHandler {
 	@ExceptionHandler(value = Exception.class)
 	public ResponseEntity<String> exception(Exception exception) {
 		log.error("Exception-" + exception.getMessage(), exception);
-		return new ResponseEntity<>(exception.getMessage(),
-				HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 }

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.training.entity.Equipment;
+import com.training.bean.WorkoutBean;
 import com.training.entity.Workout;
 import com.training.service.WorkoutService;
 
@@ -26,12 +26,18 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping(path = "/workout")
 public class WorkoutController {
-	
+
 	public static Logger log = LoggerFactory.getLogger(Workout.class.getSimpleName());
 
 	@Autowired
 	private WorkoutService workoutService;
 
+	/**
+	 * Saves a workout entity.
+	 * 
+	 * @param workout The workout entity to save.
+	 * @return ResponseEntity containing the saved workout entity.
+	 */
 	@PostMapping("/save")
 	public ResponseEntity<Workout> save(@RequestBody Workout workout) {
 		workoutService.save(workout);
@@ -43,6 +49,12 @@ public class WorkoutController {
 
 	}
 
+	/**
+	 * Updates a workout entity.
+	 * 
+	 * @param workout The workout entity to update.
+	 * @return ResponseEntity containing the updated workout entity.
+	 */
 	@PutMapping("/updateById")
 	public ResponseEntity<Workout> update(@RequestBody Workout workout) {
 		workoutService.update(workout);
@@ -53,6 +65,13 @@ public class WorkoutController {
 		return responseEntity;
 
 	}
+
+	/**
+	 * Retrieves a workout entity by ID.
+	 * 
+	 * @param id The ID of the workout entity to retrieve.
+	 * @return ResponseEntity containing the retrieved workout entity.
+	 */
 
 	@GetMapping("/getById/{id}")
 	public ResponseEntity<Workout> getById(@PathVariable Long id) {
@@ -65,6 +84,12 @@ public class WorkoutController {
 
 	}
 
+	/**
+	 * Retrieves all workout entities.
+	 * 
+	 * @return ResponseEntity containing a list of all workout entities.
+	 */
+
 	@GetMapping("/getAll")
 	public ResponseEntity<List<Workout>> getAll() {
 		List<Workout> workouts = workoutService.getAll();
@@ -75,6 +100,13 @@ public class WorkoutController {
 		return responseEntities;
 	}
 
+	/**
+	 * Deletes a workout entity by ID.
+	 * 
+	 * @param id The ID of the workout entity to delete.
+	 * @return ResponseEntity containing the deleted workout entity.
+	 */
+
 	@DeleteMapping("/deleteById/{id}")
 	public ResponseEntity<Workout> delete(@PathVariable Long id) {
 		Workout workout = workoutService.delete(id);
@@ -83,6 +115,20 @@ public class WorkoutController {
 
 		ResponseEntity<Workout> responseEntity = new ResponseEntity<>(workout, HttpStatus.OK);
 		return responseEntity;
+	}
+
+	/**
+	 * Retrieves workouts by username.
+	 * 
+	 * @param username The username associated with the workouts to retrieve.
+	 * @return ResponseEntity containing a list of workouts associated with the
+	 *         specified username.
+	 */
+
+	@GetMapping("/fetchbyName/{username}")
+	public ResponseEntity<List<Workout>> getWorkoutByUsername(@PathVariable String username) {
+		List<Workout> workouts = workoutService.getWorkoutByUsername(username);
+		return new ResponseEntity<>(workouts, HttpStatus.OK);
 	}
 
 }

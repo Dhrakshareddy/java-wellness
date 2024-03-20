@@ -7,18 +7,20 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.training.entity.Equipment;
+import com.training.bean.ProgressCalculationRequest;
+import com.training.entity.Exercise;
 import com.training.entity.Progress;
+import com.training.entity.Workout;
+import com.training.service.ExerciseService;
 import com.training.service.ProgressService;
+import com.training.service.WorkoutService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,62 +28,108 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping(path = "/progress")
 public class ProgressController {
-	
+
 	public static Logger log = LoggerFactory.getLogger(Progress.class.getSimpleName());
 
 	@Autowired
 	private ProgressService progressService;
 
+	@Autowired
+	private WorkoutService workoutService;
+
+	@Autowired
+	private ExerciseService exerciseService;
+
+	/**
+	 * Saves a progress entity.
+	 * 
+	 * @param progress The progress entity to save.
+	 * @return ResponseEntity containing the saved progress entity.
+	 */
+
 	@PostMapping("/save")
 	public ResponseEntity<Progress> save(@RequestBody Progress progress) {
-		progressService.save(progress);
 
 		log.info("Progress saved {}", progress);
+		progressService.save(progress);
 
 		ResponseEntity<Progress> responseEntity = new ResponseEntity<>(progress, HttpStatus.CREATED);
 		return responseEntity;
 
 	}
 
-	@PutMapping("/updateById")
-	public ResponseEntity<Progress> update(@RequestBody Progress progress) {
-		progressService.update(progress);
+	/**
+	 * Calculates the progress based on the provided exercises and workouts.
+	 * 
+	 * @param request The ProgressCalculationRequest object containing exercises and
+	 *                workouts.
+	 * @return ResponseEntity containing the calculated progress.
+	 */
 
-		log.info("Progress updated {}", progress);
+	@PostMapping("/calculate")
+	public ResponseEntity<Double> calculateProgress(@RequestBody ProgressCalculationRequest request) {
+		try {
+			double progress = progressService.calculateProgress(request.getExercises(), request.getWorkouts());
+			return new ResponseEntity<>(progress, HttpStatus.OK);
+		} catch (Exception e) {
 
-		ResponseEntity<Progress> responseEntity = new ResponseEntity<>(progress, HttpStatus.OK);
-		return responseEntity;
-
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
-	@GetMapping("/getById/{id}")
-	public ResponseEntity<Progress> getById(@PathVariable Long id) {
-		Progress progress = progressService.getById(id);
+	/**
+	 * Retrieves workouts by username.
+	 * 
+	 * @param username The username associated with the workouts to retrieve.
+	 * @return ResponseEntity containing a list of workouts associated with the
+	 *         specified username.
+	 */
 
-		log.info("Progress fetched {}", id);
+	@GetMapping("/forworkoutbyname/{username}")
+	public ResponseEntity<List<Workout>> getWorkoutByName(@PathVariable String username) {
 
-		ResponseEntity<Progress> responseEntity = new ResponseEntity<>(progress, HttpStatus.OK);
-		return responseEntity;
-
+		System.out.println(username);
+		List<Workout> workout = workoutService.getWorkoutByUsername(username);
+		if (workout.isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<>(workout, HttpStatus.OK);
 	}
 
-	@GetMapping("/getAll")
-	public ResponseEntity<List<Progress>> getAll() {
-		List<Progress> progresses = progressService.getAll();
-		log.info("List of progresses : {}", progresses);
-		ResponseEntity<List<Progress>> responseEntities = new ResponseEntity<List<Progress>>(progresses, HttpStatus.OK);
-		return responseEntities;
+	/**
+	 * Retrieves exercises by username.
+	 * 
+	 * @param username The username associated with the exercises to retrieve.
+	 * @return ResponseEntity containing a list of exercises associated with the
+	 *         specified username.
+	 */
+
+	@GetMapping("/forexercisebyname/{username}")
+	public ResponseEntity<List<Exercise>> getExerciseByName(@PathVariable String username) {
+
+		System.out.println(username);
+		List<Exercise> exercise = exerciseService.getExerciseByUsername(username);
+		System.out.println(exercise);
+		if (exercise.isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<>(exercise, HttpStatus.OK);
 	}
 
-	@DeleteMapping("/deleteById/{id}")
-	public ResponseEntity<Progress> delete(@PathVariable Long id) {
-		Progress progress = progressService.delete(id);
+	/**
+	 * Retrieves progress entities by username.
+	 * 
+	 * @param username The username associated with the progress entities to
+	 *                 retrieve.
+	 * @return ResponseEntity containing a list of progress entities associated with
+	 *         the specified username.
+	 */
 
-		log.info("Progress deleted {}", id);
-
-		ResponseEntity<Progress> responseEntity = new ResponseEntity<>(progress, HttpStatus.OK);
-		return responseEntity;
-
+	@GetMapping("/fetchbyName/{username}")
+	public ResponseEntity<List<Progress>> getProgressByUsername(@PathVariable String username) {
+		List<Progress> progress = progressService.getProgressByUsername(username);
+		return new ResponseEntity<>(progress, HttpStatus.OK);
 	}
 
 }

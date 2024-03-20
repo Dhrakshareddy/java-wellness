@@ -10,10 +10,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Setter
 @Getter
 @ToString
@@ -21,6 +25,7 @@ import lombok.ToString;
 @Table(name="workout")
 public class Workout implements Serializable{
 
+	
 	private static final long serialVersionUID = 1L;
 
 	@Column(name="workout_id")
@@ -34,18 +39,13 @@ public class Workout implements Serializable{
 	@Column(name="duration")
 	private String duration;
 	
-	@Column(name="calories_burned")
-	private String caloriesBurned;
 	
-	@Column(name="note")
-	private String note;
+	@Column(name="sets_Completed")
+	private Long setsCompleted;
 	
-	@Column(name="user_id")
-	private Long userId;
-
-	public Long getWorkoutId() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	@Column(name="username")
+	private String username;
+	
+	
 
 }

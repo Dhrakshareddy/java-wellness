@@ -34,6 +34,8 @@ private static final long serialVersionUID = -1516965327693370237L;
 @GeneratedValue(strategy = GenerationType.IDENTITY)
 private Long classId;
 
+private String name;
+
 @Column(name = "class_name")
 private String className;
 
@@ -46,16 +48,7 @@ private Integer enrolled;
 @Column(name = "duration")
 private String duration;
 
-public Long getClassId() {
-	// TODO Auto-generated method stub
-	return null;
-}
-
-
-
-//@ManyToMany(fetch=FetchType.LAZY,cascade = {CascadeType.ALL},mappedBy = "class_scheduling")
-//
-//private Long trainerId;
-
+@Column(name="trainer_id")
+private Long trainerId;
 
 }

@@ -10,13 +10,12 @@ import lombok.ToString;
 @Getter
 @ToString
 public class ProgressBean {
-
-	private Long userId;
 	
-	private Date date;
+	private Long progressId;
+	private String username;
+	private Date progressDate;
+	private Double calculateProgress;
+   
 	
-	private Double weight;
-	
-	private Double fitnessTestResults;
 
 }

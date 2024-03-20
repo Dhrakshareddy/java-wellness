@@ -16,27 +16,18 @@ public class AppMVCConfigure {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
 				registry.addMapping("/api/data") // Allow CORS for all endpoints
-						.allowedOrigins("file:///D:/corenutsUI/fetchapi.html") // Configure the allowed origins (you can restrict to specific origins)
+						.allowedOrigins("file:///D:/corenutsUI/fetchapi.html") // Configure the allowed origins (you can
+																				// restrict to specific origins)
 						.allowedMethods("GET", "POST", "PUT", "DELETE") // Configure the allowed HTTP methods
 						.allowedHeaders("") // Configure the allowed headers
 						.maxAge(3600); // Configure the max age of the CORS pre-flight response in seconds
 			}
 		};
 	}
-	
+
 	@Bean
 	public RestTemplate restTemplate() {
 		return new RestTemplate();
 	}
 
-//	@Bean
-//	public CorsFilter corsFilter() {
-//		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//		CorsConfiguration config = new CorsConfiguration();
-//		config.addAllowedOrigin("http://localhost:4200");
-//		config.addAllowedHeader("*");
-//		config.addAllowedMethod("*");
-//		source.registerCorsConfiguration("/**", config);
-//		return new CorsFilter(source);
-//	}
 }
